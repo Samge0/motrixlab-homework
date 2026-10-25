@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      # 如需绑定自定义域名，取消下一行注释，并在仓库根目录放置 CNAME 文件
+      # 或直接在仓库 Settings → Pages → Custom domain 中配置
+      # url: https://${{ vars.CUSTOM_DOMAIN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 如需使用自定义域名：先取消上面 environment.url 的注释并配置仓库变量 CUSTOM_DOMAIN，
+      # 再取消下面这一步的注释（自动生成 CNAME 文件随站点发布）
+      # - name: Write CNAME
+      #   run: echo "${{ vars.CUSTOM_DOMAIN }}" > CNAME
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

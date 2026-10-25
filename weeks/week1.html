@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MotrixLab 第五期课后作业 · 第一周（1~4讲）</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #eef4fb 0%, #f5f7fa 40%, #eaf3ee 100%);
+    color: #1f2937;
+    line-height: 1.75;
+    padding: 32px 4vw 64px;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  header.card {
+    background: rgba(255,255,255,.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,.9);
+    border-radius: 18px;
+    padding: 28px 32px;
+    box-shadow: 0 8px 28px rgba(31,60,110,.08);
+    margin-bottom: 26px;
+  }
+  h1 { font-size: 24px; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  .sub { color: #6b7280; font-size: 14px; }
+  .chips { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 12.5px; padding: 4px 12px; border-radius: 999px;
+    background: rgba(22,101,52,.08); color: #166534; border: 1px solid rgba(22,101,52,.18);
+    font-weight: 600;
+  }
+  .chip.blue { background: rgba(29,78,216,.07); color: #1d4ed8; border-color: rgba(29,78,216,.18); }
+  .chip.amber { background: rgba(180,83,9,.08); color: #b45309; border-color: rgba(180,83,9,.2); }
+  .chip.btn {
+    cursor: pointer; user-select: none;
+    background: rgba(29,78,216,.08); color: #1d4ed8; border-color: rgba(29,78,216,.28);
+    transition: background .15s;
+  }
+  .chip.btn:hover { background: rgba(29,78,216,.16); }
+  .chip.btn:active { transform: scale(.97); }
+
+  /* 章节 */
+  section { margin-bottom: 30px; }
+  .sec-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .sec-head h2 { font-size: 19px; font-weight: 700; }
+  .sec-head .score {
+    font-size: 12.5px; font-weight: 700; color: #b45309;
+    background: rgba(180,83,9,.08); border: 1px solid rgba(180,83,9,.2);
+    padding: 3px 12px; border-radius: 999px;
+  }
+  .q-card {
+    background: rgba(255,255,255,.66);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.92);
+    border-radius: 14px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(31,60,110,.05);
+  }
+  .q-card.collapsed { padding: 14px 24px; }
+  .q-title {
+    display: flex; align-items: flex-start; gap: 8px;
+    font-size: 15.5px; font-weight: 600; margin-bottom: 12px;
+    cursor: pointer; user-select: none;
+    border-radius: 8px;
+  }
+  .q-card.collapsed .q-title { margin-bottom: 0; }
+  .q-title:focus-visible { outline: 2px solid rgba(29,78,216,.45); outline-offset: 2px; }
+  .q-title .qno {
+    flex-shrink: 0; min-width: 30px;
+    color: #1d4ed8; font-weight: 800;
+  }
+  .q-title .qtext { flex: 1; }
+  .q-title .pts { color: #9ca3af; font-size: 13px; font-weight: 500; }
+  .q-title .chev {
+    flex-shrink: 0; margin-left: 6px; margin-top: 4px;
+    color: #94a3b8; font-size: 13px;
+    transition: transform .2s ease;
+  }
+  .q-card.collapsed .chev { transform: rotate(-90deg); }
+  .q-card.collapsed ul.opts { display: none; }
+  ul.opts { list-style: none; }
+  ul.opts li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 12px; border-radius: 10px;
+    margin-bottom: 6px; font-size: 14.5px;
+    border: 1px solid transparent;
+  }
+  ul.opts li .letter { font-weight: 700; color: #64748b; flex-shrink: 0; }
+  ul.opts li.correct {
+    background: rgba(22,163,74,.10);
+    border: 1px solid rgba(22,163,74,.35);
+    font-weight: 600;
+  }
+  ul.opts li.correct .letter { color: #15803d; }
+  ul.opts li.correct::after {
+    content: "✓";
+    margin-left: auto; flex-shrink: 0;
+    font-size: 13px; font-weight: 800; color: #15803d;
+    align-self: center;
+  }
+  footer {
+    text-align: center; color: #94a3b8; font-size: 12.5px; margin-top: 36px;
+  }
+  code {
+    background: rgba(100,116,139,.12); border-radius: 5px;
+    padding: 1px 6px; font-size: .92em;
+    font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+    color: #334155;
+  }
+  .gh-link {
+    position: fixed; top: 20px; right: 20px; z-index: 100;
+    width: 42px; height: 42px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.92);
+    border-radius: 50%;
+    box-shadow: 0 4px 14px rgba(31,60,110,.12);
+    color: #1f2937;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .gh-link:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 20px rgba(31,60,110,.18); }
+  .gh-link svg { width: 22px; height: 22px; fill: currentColor; }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .q-card, header.card { box-shadow: none; backdrop-filter: none; background: #fff; }
+    .q-card.collapsed ul.opts { display: block; }
+    .chip.btn, .gh-link { display: none; }
+  }
+</style>
+</head>
+<body>
+<a class="gh-link" href="https://github.com/Samge0/motrixlab-homework" target="_blank" rel="noopener noreferrer" aria-label="GitHub 仓库" title="GitHub 仓库">
+  <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg>
+</a>
+<div class="wrap">
+
+<header class="card">
+  <h1>第五期课后作业选择题：第一周（第 1~4 讲）</h1>
+  <div class="sub">强化学习与 MotrixLab 入门 · 课后作业（答案已标绿选中）</div>
+  <div class="chips">
+    <span class="chip">共 40 题</span>
+    <span class="chip">单选题</span>
+    <span class="chip blue">每题 2.5 分</span>
+    <span class="chip blue">满分 100 分</span>
+    <span class="chip amber">每讲 10 题 × 4 讲</span>
+    <span class="chip">✓ 绿色 = 答案</span>
+    <span class="chip btn" id="toggleAll" role="button" tabindex="0">折叠全部</span>
+  </div>
+</header>
+
+<!-- ============ 第一讲 ============ -->
+<section>
+  <div class="sec-head">
+    <h2>一、第 1 讲 课程导论：MotrixLab 能做什么</h2>
+    <span class="score">10 题 · 25 分</span>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">1.</span><span class="qtext">下列关于 MotrixLab 的定位，最准确的是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>一个机器人仿真（物理）引擎</span></li>
+      <li class="correct"><span class="letter">B.</span><span>面向机器人强化学习的开发与训练平台</span></li>
+      <li><span class="letter">C.</span><span>一个只提供 PPO 算法的算法库</span></li>
+      <li><span class="letter">D.</span><span>一个机器人模型素材集合</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">2.</span><span class="qtext">与 CartPole 这类教学环境相比，机器人强化学习任务通常更复杂的关键原因是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>状态空间和动作空间都很小</span></li>
+      <li class="correct"><span class="letter">B.</span><span>涉及机器人模型、关节执行器、物理仿真、接触碰撞、动作约束等大量环节</span></li>
+      <li><span class="letter">C.</span><span>不需要设计奖励</span></li>
+      <li><span class="letter">D.</span><span>不依赖训练算法</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">3.</span><span class="qtext">教案认为，机器人强化学习项目里"最难的往往不是算法公式，而是"？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>硬件的安装调试</span></li>
+      <li class="correct"><span class="letter">B.</span><span>工程组织</span></li>
+      <li><span class="letter">C.</span><span>数学推导</span></li>
+      <li><span class="letter">D.</span><span>数据集的标注</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">4.</span><span class="qtext">教案对 MotrixLab 核心价值的总结是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>提供速度最快的 PPO 实现</span></li>
+      <li class="correct"><span class="letter">B.</span><span>把机器人强化学习任务拆成环境、奖励、配置、注册和训练流程等模块，让项目更清晰、更易扩展、更适合教学</span></li>
+      <li><span class="letter">C.</span><span>让用户不写代码就能训练机器人</span></li>
+      <li><span class="letter">D.</span><span>自动生成仿真世界</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">5.</span><span class="qtext">教案提到的典型应用场景，不包括下列哪项？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>学习和教学</span></li>
+      <li><span class="letter">B.</span><span>Demo 复现与分析</span></li>
+      <li><span class="letter">C.</span><span>任务改造与二次开发</span></li>
+      <li class="correct"><span class="letter">D.</span><span>生产环境的实时部署</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">6.</span><span class="qtext">教案用统一方法分析官方 Demo，下面哪个<b>不是</b>教案列出的分析维度？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>任务目标</span></li>
+      <li><span class="letter">B.</span><span>奖励</span></li>
+      <li class="correct"><span class="letter">C.</span><span>文件命名规范</span></li>
+      <li><span class="letter">D.</span><span>终止条件</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">7.</span><span class="qtext">关于"任务改造与二次开发"这一应用场景，教案列举的做法不包括？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>修改一个奖励项</span></li>
+      <li><span class="letter">B.</span><span>更换目标位置</span></li>
+      <li><span class="letter">C.</span><span>调整动作尺度</span></li>
+      <li class="correct"><span class="letter">D.</span><span>修改物理引擎的源码</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">8.</span><span class="qtext">教案用"工作台"类比 MotrixLab 的模块划分，工作台上<b>不包含</b>哪个区域？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>环境区域</span></li>
+      <li><span class="letter">B.</span><span>奖励区域</span></li>
+      <li class="correct"><span class="letter">C.</span><span>日志回放区域</span></li>
+      <li><span class="letter">D.</span><span>注册区域</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">9.</span><span class="qtext">教案认为学习 MotrixLab 的重点是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>记住每一个文件名</span></li>
+      <li class="correct"><span class="letter">B.</span><span>掌握一套阅读和开发机器人强化学习项目的方法</span></li>
+      <li><span class="letter">C.</span><span>背熟所有命令行参数</span></li>
+      <li><span class="letter">D.</span><span>完整复刻官方 Demo 的代码</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">10.</span><span class="qtext">第 1 讲"本章你只需要记住的一句话"是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>学习 MotrixLab，不要一开始就陷入代码细节，先建立整体地图</span></li>
+      <li><span class="letter">B.</span><span>先跑通所有 Demo 再谈理解</span></li>
+      <li><span class="letter">C.</span><span>只有背透框架源码才算入门</span></li>
+      <li><span class="letter">D.</span><span>机器人强化学习必须从写环境开始</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 第二讲 ============ -->
+<section>
+  <div class="sec-head">
+    <h2>二、第 2 讲 基础框架总览：分层架构怎么看</h2>
+    <span class="score">10 题 · 25 分</span>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">1.</span><span class="qtext">MotrixLab 整体结构从上到下分为哪四层？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>用户接口层 → 训练算法层 → 环境实现层 → 物理仿真层</span></li>
+      <li><span class="letter">B.</span><span>环境实现层 → 用户接口层 → 物理仿真层 → 训练算法层</span></li>
+      <li><span class="letter">C.</span><span>数据层 → 算法层 → 接口层 → 仿真层</span></li>
+      <li><span class="letter">D.</span><span>物理仿真层 → 环境实现层 → 训练算法层 → 用户接口层</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">2.</span><span class="qtext"><code>train.py</code>、<code>play.py</code>、<code>view.py</code> 这类脚本属于哪一层？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>用户接口层</span></li>
+      <li><span class="letter">B.</span><span>训练算法层</span></li>
+      <li><span class="letter">C.</span><span>环境实现层</span></li>
+      <li><span class="letter">D.</span><span>物理仿真层</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">3.</span><span class="qtext">用户接口层的核心职责是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>实现任务逻辑（观测、奖励、终止条件）</span></li>
+      <li class="correct"><span class="letter">B.</span><span>负责启动流程：解析参数、加载配置、创建环境、启动训练或测试</span></li>
+      <li><span class="letter">C.</span><span>计算物理碰撞</span></li>
+      <li><span class="letter">D.</span><span>更新网络参数</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">4.</span><span class="qtext">训练算法层（如 PPO）主要负责？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>定义任务目标</span></li>
+      <li class="correct"><span class="letter">B.</span><span>数据采样、损失计算、参数更新等策略学习工作</span></li>
+      <li><span class="letter">C.</span><span>推进物理仿真</span></li>
+      <li><span class="letter">D.</span><span>解析用户命令行</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">5.</span><span class="qtext">关于训练算法层与环境的关系，教案强调？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>算法需要了解每个机器人模型的关节细节</span></li>
+      <li class="correct"><span class="letter">B.</span><span>算法只需要环境返回标准强化学习信息：观测、奖励、终止标志等</span></li>
+      <li><span class="letter">C.</span><span>算法必须自己处理物理仿真步长</span></li>
+      <li><span class="letter">D.</span><span>算法与机器人模型强耦合</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">6.</span><span class="qtext">环境实现层中，<code>Env</code> 负责的是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>定义环境参数（模型文件、步长、奖励权重等）</span></li>
+      <li class="correct"><span class="letter">B.</span><span>实现任务逻辑：如何接收动作、推进仿真、构造观测、判断任务结束</span></li>
+      <li><span class="letter">C.</span><span>生成学习信号</span></li>
+      <li><span class="letter">D.</span><span>物理碰撞检测</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">7.</span><span class="qtext">用分层视角阅读 MotrixLab 项目，第一步应该怎么做？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>从头到尾逐行读完每个文件</span></li>
+      <li><span class="letter">B.</span><span>先运行所有官方 Demo</span></li>
+      <li class="correct"><span class="letter">C.</span><span>判断文件属于哪一层，再看它承担什么职责</span></li>
+      <li><span class="letter">D.</span><span>先读物理引擎源码</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">8.</span><span class="qtext">机器人在仿真里一开始就抖动、穿模、爆炸，应该优先检查哪一层？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>只把 PPO 学习率调大</span></li>
+      <li class="correct"><span class="letter">B.</span><span>物理仿真层和环境参数</span></li>
+      <li><span class="letter">C.</span><span>命令行参数格式</span></li>
+      <li><span class="letter">D.</span><span>换一个奖励权重</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">9.</span><span class="qtext">下列哪项典型属于<b>环境实现层</b>的问题？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>命令行参数写错</span></li>
+      <li class="correct"><span class="letter">B.</span><span>观测缺关键信息、奖励方向错误、终止条件过严</span></li>
+      <li><span class="letter">C.</span><span>PPO 配置不合理</span></li>
+      <li><span class="letter">D.</span><span>机器人仿真不稳定</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">10.</span><span class="qtext">一次训练的正确流转顺序是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>用户命令 → 训练入口 → 配置和注册 → 环境创建 → 算法采样 → 物理仿真 → 奖励反馈 → 策略更新</span></li>
+      <li><span class="letter">B.</span><span>训练入口 → 算法采样 → 用户命令 → 环境创建 → 物理仿真</span></li>
+      <li><span class="letter">C.</span><span>环境创建 → 配置和注册 → 用户命令 → 算法采样 → 策略更新</span></li>
+      <li><span class="letter">D.</span><span>物理仿真 → 奖励反馈 → 算法采样 → 环境创建 → 训练入口</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 第三讲 ============ -->
+<section>
+  <div class="sec-head">
+    <h2>三、第 3 讲 训练环境：EnvCfg、Env、Reward 的关系</h2>
+    <span class="score">10 题 · 25 分</span>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">1.</span><span class="qtext">训练环境"三位一体"的一句话概括是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>EnvCfg 管参数，Env 管流程，Reward 管目标</span></li>
+      <li><span class="letter">B.</span><span>EnvCfg 管流程，Env 管参数，Reward 管目标</span></li>
+      <li><span class="letter">C.</span><span>EnvCfg 管目标，Reward 管参数，Env 管流程</span></li>
+      <li><span class="letter">D.</span><span>三者职责完全相同</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">2.</span><span class="qtext">把所有逻辑写进一个大文件硬编码，教案指出的主要问题是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>训练速度更快</span></li>
+      <li class="correct"><span class="letter">B.</span><span>改参数要改代码、不同实验难以对比、代码难以复用和测试</span></li>
+      <li><span class="letter">C.</span><span>观测维度会自动对齐</span></li>
+      <li><span class="letter">D.</span><span>不需要再写奖励</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">3.</span><span class="qtext"><code>EnvCfg</code> 中 <code>sim_dt</code> 的含义是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>物理仿真步长（秒）</span></li>
+      <li><span class="letter">B.</span><span>控制步长（秒）</span></li>
+      <li><span class="letter">C.</span><span>训练总时长</span></li>
+      <li><span class="letter">D.</span><span>网络参数更新的间隔</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">4.</span><span class="qtext"><code>EnvCfg</code> 的"四大作用"<b>不包括</b>下列哪项？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>配置集中化</span></li>
+      <li><span class="letter">B.</span><span>实验可复现</span></li>
+      <li><span class="letter">C.</span><span>便于运行时覆盖</span></li>
+      <li class="correct"><span class="letter">D.</span><span>自动调整超参数</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">5.</span><span class="qtext">在环境类上使用 <code>@envcfg("cartpole")</code> 装饰器，体现的是 <code>EnvCfg</code> 的哪项作用？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>便于注册，让框架能找到该配置</span></li>
+      <li><span class="letter">B.</span><span>便于运行时覆盖</span></li>
+      <li><span class="letter">C.</span><span>配置集中化</span></li>
+      <li><span class="letter">D.</span><span>域随机化</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">6.</span><span class="qtext"><code>Env</code> 的核心职责是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>定义环境所需的全部参数</span></li>
+      <li class="correct"><span class="letter">B.</span><span>把配置、动作、仿真、观测、奖励、终止条件串起来</span></li>
+      <li><span class="letter">C.</span><span>只负责物理碰撞计算</span></li>
+      <li><span class="letter">D.</span><span>只负责更新策略参数</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">7.</span><span class="qtext"><code>Env.step(action)</code> 的标准返回值是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>只有 reward</span></li>
+      <li class="correct"><span class="letter">B.</span><span><code>(obs, reward, done, info)</code></span></li>
+      <li><span class="letter">C.</span><span><code>(state, action)</code></span></li>
+      <li><span class="letter">D.</span><span><code>(obs, done)</code></span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">8.</span><span class="qtext">教案推荐的阅读 <code>Env</code> 代码的正确顺序是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>从头到尾按文件顺序逐行读</span></li>
+      <li class="correct"><span class="letter">B.</span><span><code>__init__</code> → <code>reset</code> → <code>step</code> → 动作处理 → 仿真步进 → observation → reward → 终止条件</span></li>
+      <li><span class="letter">C.</span><span>先读训练循环再看环境</span></li>
+      <li><span class="letter">D.</span><span>先读所有 import 再读逻辑</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">9.</span><span class="qtext"><code>Env.reset()</code> 的职责是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>接收用户的动作输入</span></li>
+      <li class="correct"><span class="letter">B.</span><span>生成初始状态、添加随机性、返回初始 observation</span></li>
+      <li><span class="letter">C.</span><span>保存训练日志</span></li>
+      <li><span class="letter">D.</span><span>更新策略参数</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">10.</span><span class="qtext">命令行执行 <code>python train.py --env_cfg_override max_episode_steps=500</code>，体现的是 <code>EnvCfg</code> 的哪项优势？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>便于注册</span></li>
+      <li><span class="letter">B.</span><span>便于物理仿真</span></li>
+      <li class="correct"><span class="letter">C.</span><span>便于运行时覆盖</span></li>
+      <li><span class="letter">D.</span><span>便于策略更新</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 第四讲 ============ -->
+<section>
+  <div class="sec-head">
+    <h2>四、第 4 讲 奖励函数：为什么奖励决定训练成败</h2>
+    <span class="score">10 题 · 25 分</span>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">1.</span><span class="qtext">关于 Reward 的本质，最准确的说法是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>把任务目标转成数值信号；算法只会优化 reward，不懂真实目标</span></li>
+      <li><span class="letter">B.</span><span>是给人类看的日志</span></li>
+      <li><span class="letter">C.</span><span>描述机器人模型的关节细节</span></li>
+      <li><span class="letter">D.</span><span>决定物理仿真的步长</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">2.</span><span class="qtext">教案提出的奖励设计六大原则，<b>不包括</b>下列哪项？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>目标一致</span></li>
+      <li><span class="letter">B.</span><span>信号密度</span></li>
+      <li><span class="letter">C.</span><span>尺度合理</span></li>
+      <li class="correct"><span class="letter">D.</span><span>数值越大越好</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">3.</span><span class="qtext">任务要求"抓取物体"，但奖励只写 <code>reward = -distance_to_object</code>（只奖励接近），主要问题是什么？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>奖励与真实目标不一致，模型可能学到只接近、不抓取</span></li>
+      <li><span class="letter">B.</span><span>训练一定会失败，完全无法收敛</span></li>
+      <li><span class="letter">C.</span><span>没有问题，靠近自然就能完成抓取</span></li>
+      <li><span class="letter">D.</span><span>会导致物理仿真崩溃</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">4.</span><span class="qtext">下列哪一项是"稀疏奖励"的典型示例？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>任务成功给 1，否则全给 0</span></li>
+      <li><span class="letter">B.</span><span>每一步按距离变化给出连续反馈</span></li>
+      <li><span class="letter">C.</span><span>对抖动动作施加惩罚</span></li>
+      <li><span class="letter">D.</span><span>成功后额外加分</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">5.</span><span class="qtext">奖励惩罚量级过大（如 <code>-100 * abs(action)</code>）的典型后果是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>模型学会不动</span></li>
+      <li><span class="letter">B.</span><span>模型动作更平滑</span></li>
+      <li><span class="letter">C.</span><span>训练收敛更快</span></li>
+      <li><span class="letter">D.</span><span>观测信号更稳定</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">6.</span><span class="qtext">奖励只给末端速度 <code>abs(velocity)</code>，智能体可能通过什么方式刷高分？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>静止不动</span></li>
+      <li class="correct"><span class="letter">B.</span><span>不断抖动以获得速度分</span></li>
+      <li><span class="letter">C.</span><span>匀速直线靠近目标</span></li>
+      <li><span class="letter">D.</span><span>减少动作能耗</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">7.</span><span class="qtext">奖励项互相打架（如先 <code>speed * 2.0</code> 后又 <code>- speed * 3.0</code>）的后果是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>模型不知道该学什么</span></li>
+      <li><span class="letter">B.</span><span>训练速度翻倍</span></li>
+      <li><span class="letter">C.</span><span>奖励变得更加可解释</span></li>
+      <li><span class="letter">D.</span><span>对学习没有任何影响</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">8.</span><span class="qtext">奖励设计的"可解释"原则要求？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li class="correct"><span class="letter">A.</span><span>每一项奖励都对应明确的任务目标</span></li>
+      <li><span class="letter">B.</span><span>表达式越复杂越好</span></li>
+      <li><span class="letter">C.</span><span>奖励项越多越好</span></li>
+      <li><span class="letter">D.</span><span>奖励来源对学员隐藏</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">9.</span><span class="qtext">出现"总 reward 在上升，但任务实际失败"时，最合理的排查做法是？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>只看总 reward 是否超过阈值</span></li>
+      <li class="correct"><span class="letter">B.</span><span>看 success rate 与 reward breakdown，警惕在刷辅助奖励项</span></li>
+      <li><span class="letter">C.</span><span>直接加大所有奖励权重</span></li>
+      <li><span class="letter">D.</span><span>缩短训练步数</span></li>
+    </ul>
+  </div>
+
+  <div class="q-card">
+    <div class="q-title" tabindex="0" role="button" aria-expanded="true"><span class="qno">10.</span><span class="qtext">关于训练过程的行为观察，教案强调？ <span class="pts">（2.5 分）</span></span><span class="chev">▾</span></div>
+    <ul class="opts">
+      <li><span class="letter">A.</span><span>reward 曲线可以完全替代行为观察</span></li>
+      <li class="correct"><span class="letter">B.</span><span>每周至少看一次训练过程的行为视频，检查是否有预期动作之外的"作弊"行为</span></li>
+      <li><span class="letter">C.</span><span>只要曲线收敛就代表任务成功</span></li>
+      <li><span class="letter">D.</span><span>边界状态（成功/失败/超时边界）无需检查</span></li>
+    </ul>
+  </div>
+</section>
+
+<footer>MotrixLab 第五期 · 第一周课后作业（第 1~4 讲）· 共 40 题 · 点击题目可折叠 / 展开</footer>
+</div>
+
+<script>
+(function () {
+  var titles = document.querySelectorAll('.q-title');
+  titles.forEach(function (t) {
+    var toggle = function () {
+      var card = t.closest('.q-card');
+      var collapsed = card.classList.toggle('collapsed');
+      t.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      syncBtn();
+    };
+    t.addEventListener('click', toggle);
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+  });
+
+  var btn = document.getElementById('toggleAll');
+  var cards = function () { return Array.prototype.slice.call(document.querySelectorAll('.q-card')); };
+  var syncBtn = function () {
+    var open = cards().some(function (c) { return !c.classList.contains('collapsed'); });
+    btn.textContent = open ? '折叠全部' : '展开全部';
+  };
+  var toggleAll = function () {
+    var open = cards().some(function (c) { return !c.classList.contains('collapsed'); });
+    cards().forEach(function (c) {
+      c.classList.toggle('collapsed', open);
+      var t = c.querySelector('.q-title');
+      if (t) t.setAttribute('aria-expanded', open ? 'false' : 'true');
+    });
+    syncBtn();
+  };
+  btn.addEventListener('click', toggleAll);
+  btn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAll(); }
+  });
+})();
+</script>
+</body>
+</html>
